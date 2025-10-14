@@ -49,7 +49,7 @@ module "backend_service" {
     CLOUD_STORAGE_TYPE                        = var.CLOUD_STORAGE_TYPE
     CLOUD_STORAGE_UNIVERSE_DOMAIN             = var.FIREBASE_UNIVERSE_DOMAIN
 
-    DATABASE_URL                         = var.Database_url
+    DATABASE_URL                         = var.DATABASE_URL
     FIREBASE_AUTH_PROVIDER_X509_CERT_URL = var.FIREBASE_AUTH_PROVIDER_X509_CERT_URL
     FIREBASE_AUTH_URI                    = var.FIREBASE_AUTH_URI
     FIREBASE_CLIENT_EMAIL                = var.FIREBASE_CLIENT_EMAIL

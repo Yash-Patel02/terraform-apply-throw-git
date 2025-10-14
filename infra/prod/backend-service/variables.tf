@@ -60,7 +60,7 @@ variable "FIREBASE_UNIVERSE_DOMAIN" {
   description = "Firebase Universe Domain"
   type        = string
 }
-variable "Database_url" {
+variable "DATABASE_URL" {
   description = "Database URL"
   type        = string
 }
@@ -123,35 +123,6 @@ variable "PERSIMMON_DATA_BUCKET" {
 variable "TOPIC_NAME" {
   description = "Topic Name"
   type        = string
-}
-variable "region" {
-  description = "The region where the resources will be created."
-  type        = string
-}
-variable "region_container_repo" {
-  description = "The region where the Artifact Registry repository is located."
-  type        = string
-  
-}
-variable "image_name" {
-  description = "The name of the Docker image for the backend service."
-  type        = string
-  
-}
-variable "bucket_name" {
-  description = "The name of the Cloud Storage bucket to be used."
-  type        = string
-  
-}
-variable "repository_id" {
-  description = "The ID of the Artifact Registry repository."
-  type        = string
-  
-}
-variable "app_image_name" {
-  description = "The name of the Docker image for the frontend application."
-  type        = string
-  
 }
 variable "PERSIMMON_IMAGES_BUCKET" {
   description = "The name of the bucket for persimmon images"
