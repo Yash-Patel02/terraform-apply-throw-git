@@ -1,29 +1,29 @@
-variable "project_id" {
+variable "PROJECT_ID" {
   description = "The ID of the project in which the resource belongs."
   type        = string
   
 }
-variable "region_cloudrun" {
+variable "REGION_CLOUDRUN" {
   description = "The region where the Cloud Run service will be deployed."
   type        = string
   
 }
-variable "frontend_service" {
+variable "FRONTEND_SERVICE" {
   description = "The name of the frontend service."
   type        = string
   
 }
-variable "region" {
+variable "REGION" {
   description = "The region where the frontend service will be deployed."
   type        = string
   
 
 }
 
-variable "max_instance_count" {
+variable "MAX_INSTANCE_COUNT" {
   description = "Max instance count for service"
 }
 
-variable "timeout" {
+variable "TIMEOUT" {
   description = "Max instance count for service"
 }

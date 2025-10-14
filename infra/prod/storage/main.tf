@@ -1,9 +1,9 @@
 module "app_data_storage" {
   source = "../../../modules/storage"
 
-  project_id                  = var.project_id
-  region                     = var.region
-  bucket_name                = "${var.bucket_name}-dev"
+  project_id                  = var.PROJECT_ID
+  region                     = var.REGION
+  bucket_name                = "${var.BUCKET_NAME}-dev"
   uniform_bucket_level_access = true
   force_destroy              = true  # Allow destruction in dev environment
   versioning_enabled         = false
@@ -12,8 +12,8 @@ module "app_data_storage" {
 module "images_storage" {
   source = "../../../modules/storage"
 
-  project_id                  = var.project_id
-  region                     = var.region
+  project_id                  = var.PROJECT_ID
+  region                     = var.REGION
   bucket_name                = "${var.PERSIMMON_IMAGES_BUCKET}-dev"
   uniform_bucket_level_access = true
   force_destroy              = true  # Allow destruction in dev environment

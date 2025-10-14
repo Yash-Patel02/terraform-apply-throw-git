@@ -9,9 +9,9 @@
 module "frontend_service" {
   source = "../../../modules/cloud-run"
 
-  project_id   = var.project_id
-  region       = var.region_cloudrun
-  service_name = var.frontend_service
+  project_id   = var.PROJECT_ID
+  region       = var.REGION_CLOUDRUN
+  service_name = var.FRONTEND_SERVICE
   image_url    = ""#data.terraform_remote_state.artifact.outputs.frontend_image_url
   
   # Frontend-specific configuration
@@ -20,8 +20,8 @@ module "frontend_service" {
   memory_limit                     = "512Mi"
   max_instance_request_concurrency = 80
   enable_volume_mount              = false
-  max_instance_count = var.max_instance_count
-  timeout = var.timeout
+  max_instance_count = var.MAX_INSTANCE_COUNT
+  timeout = var.TIMEOUT
    bucket_name                      = "" #data.terraform_remote_state.storage.outputs.storage_bucket_name
   volume_mount_path                = "/persimmon-data"
   environment_variables={}

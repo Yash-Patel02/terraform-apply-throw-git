@@ -19,9 +19,9 @@
 module "backend_service" {
   source = "../../../modules/cloud-run"
 
-  project_id   = var.project_id
-  region       = var.region_cloudrun
-  service_name = var.backend_service
+  project_id   = var.PROJECT_ID
+  region       = var.REGION_CLOUDRUN
+  service_name = var.BACKEND_SERVICE
   image_url    = "" #data.terraform_remote_state.artifact.outputs.backend_image_url
   # Backend-specific configuration
   container_port                   = 8000
@@ -31,8 +31,8 @@ module "backend_service" {
   enable_volume_mount              = true
   bucket_name                      = "" #data.terraform_remote_state.storage.outputs.storage_bucket_name
   volume_mount_path                = "/persimmon-data"
-  max_instance_count               = var.max_instance_count
-  timeout                          = var.timeout
+  max_instance_count               = var.MAX_INSTANCE_COUNT
+  timeout                          = var.TIMEOUT
   
 
 

@@ -1,14 +1,14 @@
-variable "project_id" {
+variable "PROJECT_ID" {
   description = "The ID of the project in which the resource belongs."
   type        = string
   
 }
-variable "region" {
+variable "REGION" {
   description = "The region where the Cloud Run service will be deployed."
   type        = string
   
 }
-variable "bucket_name" {
+variable "BUCKET_NAME" {
   description = "The name of the storage bucket."
   type        = string
   
