@@ -134,6 +134,7 @@ jobs:
 
           for dir in */ ; do
             echo "----------------------------"
+            echo ${dir%/}
             echo "Running Terraform in $dir"
             cd "$dir"
             terraform init
