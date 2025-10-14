@@ -1,0 +1,64 @@
+name: Terraform Plan
+
+on:
+  push:
+    branches:
+      - main
+      - stage
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    # Pick environment based on branch
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.0
+
+      # 3️⃣ Setup GCP credentials
+      - name: Setup GCP credentials
+        env:
+          GCP_CREDENTIALS_BASE64: ${{ secrets.GCP_CREDENTIALS_BASE64 }}
+          GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
+        run: |
+          echo "Decoding GCP credentials..."
+          printf "%s" "$GCP_CREDENTIALS_BASE64" | base64 --decode > "${HOME}/gcp-key.json"
+          gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
+          gcloud config set project "$GCP_PROJECT_ID"
+
+      # 4️⃣ Map uppercase TF_VAR_ secrets to lowercase
+      - name: Map TF_VAR secrets to lowercase
+        run: |
+          echo "Mapping uppercase TF_VARs to lowercase for Terraform..."
+          for var in $(env | grep '^TF_VAR_' | awk -F= '{print $1}'); do
+            lower=$(echo $var | awk '{print tolower($0)}')
+            export $lower=${!var}
+          done
+
+      # 5️⃣ Run Terraform in environment folders
+      - name: Run Terraform in infra modules
+        run: |
+          # Determine environment folder based on branch
+          ENV_DIR=$([[ "${GITHUB_REF}" == "refs/heads/main" ]] && echo "prod" || echo "stage")
+          echo "Environment folder: $ENV_DIR"
+
+          # Go to infra folder
+          cd infra/$ENV_DIR
+
+          # Loop through all module folders
+          for dir in */ ; do
+            echo "----------------------------"
+            echo "Running Terraform in $dir"
+            cd "$dir"
+            terraform init
+            terraform plan -input=false
+            cd ..
+          done
