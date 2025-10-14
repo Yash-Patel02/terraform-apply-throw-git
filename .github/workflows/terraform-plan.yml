@@ -12,18 +12,15 @@ jobs:
     # Pick environment based on branch
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
-    steps:
-      # 1️⃣ Checkout repo
+    steps:     
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.0
 
-      # 3️⃣ Setup GCP credentials
       - name: Setup GCP credentials
         env:
           GCP_CREDENTIALS_BASE64: ${{ secrets.GCP_CREDENTIALS_BASE64 }}
@@ -34,7 +31,6 @@ jobs:
           gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
           gcloud config set project "$GCP_PROJECT_ID"
 
-      # 4️⃣ Run Terraform in infra modules with all TF_VAR secrets
       - name: Run Terraform in infra modules
         env:
           TF_VAR_AI_INTERVIEW_LINK: ${{ secrets.TF_VAR_AI_INTERVIEW_LINK }}
