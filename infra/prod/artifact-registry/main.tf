@@ -1,25 +1,25 @@
 module "backend_artifact_registry" {
   source = "../../../modules/artifact-registry"
 
-  project_id    = var.project_id
-  region        = var.region_container_repo
-  repository_id = "${var.repository_id}-backend"
-  image_name    = var.image_name
+  project_id    = var.PROJECT_ID
+  region        = var.REGION_CONTAINER_REPO
+  repository_id = "${var.REPOSITORY_ID}-backend"
+  image_name    = var.IMAGE_NAME
 }
 
 module "frontend_artifact_registry" {
   source = "../../../modules/artifact-registry"
 
-  project_id    = var.project_id
-  region        = var.region_container_repo
-  repository_id = "${var.repository_id}-frontend"
-  image_name    = var.app_image_name
+  project_id    = var.PROJECT_ID
+  region        = var.REGION_CONTAINER_REPO
+  repository_id = "${var.REPOSITORY_ID}-frontend"
+  image_name    = var.APP_IMAGE_NAME
 }
 module "n8n_artifact_registry" {
   source = "../../../modules/artifact-registry"
 
-  project_id    = var.project_id
-  region        = var.region_container_repo
-  repository_id = var.repository_id
-  image_name    = var.n8n_image_name
+  project_id    = var.PROJECT_ID
+  region        = var.REGION_CONTAINER_REPO
+  repository_id = var.REPOSITORY_ID
+  image_name    = var.N8N_IMAGE_NAME
 }

@@ -1,31 +1,34 @@
-variable "project_id" {
+variable "PROJECT_ID" {
   description = "The ID of the project in which the resource belongs."
   type        = string
-  
 }
-variable "region_container_repo" {
+
+variable "REGION_CONTAINER_REPO" {
   description = "The location of the Artifact Registry repository."
   type        = string
 }
-variable "repository_id" {
+
+variable "REPOSITORY_ID" {
   description = "The ID of the Artifact Registry repository."
   type        = string
 }
-variable "image_name" {
+
+variable "IMAGE_NAME" {
   description = "The name of the container image."
   type        = string
-
 }
-variable "app_image_name" {
+
+variable "APP_IMAGE_NAME" {
   description = "The name of the application container image."
   type        = string
 }
-variable "region" {
+
+variable "REGION" {
   description = "The region to host the resource."
   type        = string
-  
 }
-variable "n8n_image_name" {
+
+variable "N8N_IMAGE_NAME" {
   description = "The name of the n8n container image."
   type        = string
 }
