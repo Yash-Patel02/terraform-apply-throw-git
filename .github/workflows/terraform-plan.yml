@@ -59,7 +59,7 @@ jobs:
           gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
           gcloud config set project "$GCP_PROJECT_ID"
 
-      - name: Run Terraform command
+      - name: Run selected Terraform command
         env:
           TF_VAR_AI_INTERVIEW_LINK: ${{ secrets.TF_VAR_AI_INTERVIEW_LINK }}
           TF_VAR_APP_IMAGE_NAME: ${{ secrets.TF_VAR_APP_IMAGE_NAME }}
@@ -110,14 +110,52 @@ jobs:
           TF_VAR_GOOGLE_MEET_CLIENT_SECRET: ${{ secrets.TF_VAR_GOOGLE_MEET_CLIENT_SECRET }}
           TF_VAR_GOOGLE_MEET_REDIRECT_URL: ${{ secrets.TF_VAR_GOOGLE_MEET_REDIRECT_URL }}
           TF_VAR_IMAGE_NAME: ${{ secrets.TF_VAR_IMAGE_NAME }}
+          TF_VAR_INTEGRATIONS_SECRET_KEY: ${{ secrets.TF_VAR_INTEGRATIONS_SECRET_KEY }}
+          TF_VAR_JOB_SECRET_KEY: ${{ secrets.TF_VAR_JOB_SECRET_KEY }}
+          TF_VAR_KEY_1: ${{ secrets.TF_VAR_KEY_1 }}
+          TF_VAR_KEY_2: ${{ secrets.TF_VAR_KEY_2 }}
+          TF_VAR_KEY_3: ${{ secrets.TF_VAR_KEY_3 }}
+          TF_VAR_KEY_4: ${{ secrets.TF_VAR_KEY_4 }}
+          TF_VAR_KEY_5: ${{ secrets.TF_VAR_KEY_5 }}
+          TF_VAR_LINKEDIN_CLIENT_ID: ${{ secrets.TF_VAR_LINKEDIN_CLIENT_ID }}
+          TF_VAR_LINKEDIN_CLIENT_SECRET: ${{ secrets.TF_VAR_LINKEDIN_CLIENT_SECRET }}
+          TF_VAR_LINKEDIN_REDIRECT_URL: ${{ secrets.TF_VAR_LINKEDIN_REDIRECT_URL }}
+          TF_VAR_MAX_INSTANCE_COUNT: ${{ secrets.TF_VAR_MAX_INSTANCE_COUNT }}
+          TF_VAR_N8N_BASIC_AUTH_ACTIVE: ${{ secrets.TF_VAR_N8N_BASIC_AUTH_ACTIVE }}
+          TF_VAR_N8N_BASIC_AUTH_PASSWORD: ${{ secrets.TF_VAR_N8N_BASIC_AUTH_PASSWORD }}
+          TF_VAR_N8N_BASIC_AUTH_USER: ${{ secrets.TF_VAR_N8N_BASIC_AUTH_USER }}
+          TF_VAR_N8N_ENCRYPTION_KEY: ${{ secrets.TF_VAR_N8N_ENCRYPTION_KEY }}
+          TF_VAR_N8N_HOST: ${{ secrets.TF_VAR_N8N_HOST }}
+          TF_VAR_N8N_PROTOCOL: ${{ secrets.TF_VAR_N8N_PROTOCOL }}
+          TF_VAR_N8N_RUN_COMMAND: ${{ secrets.TF_VAR_N8N_RUN_COMMAND }}
+          TF_VAR_N8N_SERVICE_NAME: ${{ secrets.TF_VAR_N8N_SERVICE_NAME }}
+          TF_VAR_OTPLESS_CLIENT_ID: ${{ secrets.TF_VAR_OTPLESS_CLIENT_ID }}
+          TF_VAR_OTPLESS_CLIENT_SECRET: ${{ secrets.TF_VAR_OTPLESS_CLIENT_SECRET }}
+          TF_VAR_PERSIMMON_DATA_BUCKET: ${{ secrets.TF_VAR_PERSIMMON_DATA_BUCKET }}
+          TF_VAR_PERSIMMON_IMAGES_BUCKET: ${{ secrets.TF_VAR_PERSIMMON_IMAGES_BUCKET }}
           TF_VAR_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
-          # Add all other TF_VAR secrets here as needed
+          TF_VAR_QUEUE_BULL_REDIS_PORT: ${{ secrets.TF_VAR_QUEUE_BULL_REDIS_PORT }}
+          TF_VAR_REDIS_URL: ${{ secrets.TF_VAR_REDIS_URL }}
+          TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_REGION_CLOUDRUN: ${{ secrets.TF_VAR_REGION_CLOUDRUN }}
+          TF_VAR_REGION_CONTAINER_REPO: ${{ secrets.TF_VAR_REGION_CONTAINER_REPO }}
+          TF_VAR_REPOSITORY_ID: ${{ secrets.TF_VAR_REPOSITORY_ID }}
+          TF_VAR_SECRET_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+          TF_VAR_SMTP_PASSWORD: ${{ secrets.TF_VAR_SMTP_PASSWORD }}
+          TF_VAR_SMTP_USER: ${{ secrets.TF_VAR_SMTP_USER }}
+          TF_VAR_SOLR_BASE_URL: ${{ secrets.TF_VAR_SOLR_BASE_URL }}
+          TF_VAR_TEMPLATE_EMAIL_ID: ${{ secrets.TF_VAR_TEMPLATE_EMAIL_ID }}
+          TF_VAR_TIMEOUT: ${{ secrets.TF_VAR_TIMEOUT }}
+          TF_VAR_TOPIC_NAME: ${{ secrets.TF_VAR_TOPIC_NAME }}
+          TF_VAR_VOLUME_MOUNT_PATH: ${{ secrets.TF_VAR_VOLUME_MOUNT_PATH }}
+          TF_VAR_WEB_CONCURRENCY: ${{ secrets.TF_VAR_WEB_CONCURRENCY }}
+          TF_VAR_N8N_IMAGE_NAME: ${{ secrets.TF_VAR_N8N_IMAGE_NAME }}
         run: |
-          ENV=${{ github.event.inputs.environment }}
+          ENV_DIR=${{ github.event.inputs.environment }}
           DIR=${{ github.event.inputs.directory }}
           CMD=${{ github.event.inputs.command }}
 
-          echo "Running Terraform $CMD for $DIR in $ENV environment"
-          cd "infra/$ENV/$DIR"
+          echo "Running Terraform $CMD for module '$DIR' in environment '$ENV_DIR'"
+          cd "infra/$ENV_DIR/$DIR"
           terraform $CMD -input=false
           cd - >/dev/null
