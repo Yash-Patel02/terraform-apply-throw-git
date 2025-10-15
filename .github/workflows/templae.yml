@@ -18,7 +18,6 @@ on:
         options:
           - stage
           - prod
-
       module:
         description: 'Select Terraform Module'
         required: true
@@ -29,7 +28,6 @@ on:
           - frontend-service
           - backend-service
           - storage
-
       command:
         description: 'Select Terraform Command'
         required: true
@@ -54,6 +52,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.0
+
       - name: Setup GCP credentials
         env:
           GCP_CREDENTIALS_BASE64: ${{ secrets.GCP_CREDENTIALS_BASE64 }}
@@ -63,7 +62,62 @@ jobs:
           gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
           gcloud config set project "$GCP_PROJECT_ID"
 
-      - name: Run selected Terraform command
+      # Artifact Registry Module
+      - name: Terraform for Artifact Registry
+        if: ${{ github.event.inputs.module == 'artifact-registry' }}
+        env:
+          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
+          TF_VAR_REGION_CONTAINER_REPO: ${{ secrets.TF_VAR_REGION_CONTAINER_REPO }}
+          TF_VAR_REPOSITORY_ID: ${{ secrets.TF_VAR_REPOSITORY_ID }}
+          TF_VAR_IMAGE_NAME: ${{ secrets.TF_VAR_IMAGE_NAME }}
+          TF_VAR_APP_IMAGE_NAME: ${{ secrets.TF_VAR_APP_IMAGE_NAME }}
+          TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_N8N_IMAGE_NAME: ${{ secrets.TF_VAR_N8N_IMAGE_NAME }}
+        run: |
+          ENV_DIR=${{ github.event.inputs.environment_module }}
+          CMD=${{ github.event.inputs.command }}
+          cd "infra/$ENV_DIR/artifact-registry"
+          terraform init -input=false -upgrade
+          terraform $CMD -input=false
+          cd - >/dev/null
+
+      # Frontend Service Module
+      - name: Terraform for Frontend Service
+        if: ${{ github.event.inputs.module == 'frontend-service' }}
+        env:
+          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
+          TF_VAR_REGION_CLOUDRUN: ${{ secrets.TF_VAR_REGION_CLOUDRUN }}
+          TF_VAR_FRONTEND_SERVICE: ${{ secrets.TF_VAR_FRONTEND_SERVICE }}
+          TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_MAX_INSTANCE_COUNT: ${{ secrets.TF_VAR_MAX_INSTANCE_COUNT }}
+          TF_VAR_TIMEOUT: ${{ secrets.TF_VAR_TIMEOUT }}
+        run: |
+          ENV_DIR=${{ github.event.inputs.environment_module }}
+          CMD=${{ github.event.inputs.command }}
+          cd "infra/$ENV_DIR/frontend-service"
+          terraform init -input=false -upgrade
+          terraform $CMD -input=false
+          cd - >/dev/null
+
+      # Storage Module
+      - name: Terraform for Storage
+        if: ${{ github.event.inputs.module == 'storage' }}
+        env:
+          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
+          TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_BUCKET_NAME: ${{ secrets.TF_VAR_BUCKET_NAME }}
+          TF_VAR_PERSIMMON_IMAGES_BUCKET: ${{ secrets.TF_VAR_PERSIMMON_IMAGES_BUCKET }}
+        run: |
+          ENV_DIR=${{ github.event.inputs.environment_module }}
+          CMD=${{ github.event.inputs.command }}
+          cd "infra/$ENV_DIR/storage"
+          terraform init -input=false -upgrade
+          terraform $CMD -input=false
+          cd - >/dev/null
+
+      # Backend Service Module
+      - name: Terraform for Backend Service
+        if: ${{ github.event.inputs.module == 'backend-service' }}
         env:
           TF_VAR_AI_INTERVIEW_LINK: ${{ secrets.TF_VAR_AI_INTERVIEW_LINK }}
           TF_VAR_APP_IMAGE_NAME: ${{ secrets.TF_VAR_APP_IMAGE_NAME }}
@@ -156,10 +210,8 @@ jobs:
           TF_VAR_N8N_IMAGE_NAME: ${{ secrets.TF_VAR_N8N_IMAGE_NAME }}
         run: |
           ENV_DIR=${{ github.event.inputs.environment_module }}
-          DIR=${{ github.event.inputs.module }}
           CMD=${{ github.event.inputs.command }}
-          echo "Running Terraform init and $CMD for module '$DIR' in environment '$ENV_DIR'"
-          cd "infra/$ENV_DIR/$DIR"
+          cd "infra/$ENV_DIR/backend-service"
           terraform init -input=false -upgrade
           terraform $CMD -input=false
           cd - >/dev/null
