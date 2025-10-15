@@ -10,8 +10,8 @@ on:
         type: choice
         options:
           - production
-      environment_directory:
-        description: 'Select Environment Directory'
+      environment_module:
+        description: 'Select Environment Module'
         required: true
         default: dev
         type: choice
@@ -19,7 +19,7 @@ on:
           - stage
           - prod
 
-      directory:
+      module:
         description: 'Select Terraform Module'
         required: true
         default: frontend-service
@@ -156,7 +156,7 @@ jobs:
           TF_VAR_N8N_IMAGE_NAME: ${{ secrets.TF_VAR_N8N_IMAGE_NAME }}
         run: |
           ENV_DIR=${{ github.event.inputs.environment_directory }}
-          DIR=${{ github.event.inputs.directory }}
+          DIR=${{ github.event.inputs.module }}
           CMD=${{ github.event.inputs.command }}
           echo "Running Terraform init and $CMD for module '$DIR' in environment '$ENV_DIR'"
           cd "infra/$ENV_DIR/$DIR"
