@@ -9,21 +9,26 @@ on:
         default: dev
         type: choice
         options:
-          - dev
-          - qa
-          - uat
           - production
+      environment_directory:
+        description: 'Select Environment Directory'
+        required: true
+        default: dev
+        type: choice
+        options:
+          - stage
+          - prod
 
       directory:
         description: 'Select Terraform Module'
         required: true
-        default: frontend
+        default: frontend-service
         type: choice
         options:
           - artifact-registry
-          - frontend
-          - backend
-          - database
+          - frontend-service
+          - backend-service
+          - storage
 
       command:
         description: 'Select Terraform Command'
@@ -150,7 +155,7 @@ jobs:
           TF_VAR_WEB_CONCURRENCY: ${{ secrets.TF_VAR_WEB_CONCURRENCY }}
           TF_VAR_N8N_IMAGE_NAME: ${{ secrets.TF_VAR_N8N_IMAGE_NAME }}
         run: |
-          ENV_DIR=${{ github.event.inputs.environment }}
+          ENV_DIR=${{ github.event.inputs.environment_directory }}
           DIR=${{ github.event.inputs.directory }}
           CMD=${{ github.event.inputs.command }}
 
