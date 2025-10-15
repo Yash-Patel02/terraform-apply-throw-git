@@ -56,7 +56,7 @@ jobs:
       - name: Setup GCP credentials
         env:
           GCP_CREDENTIALS_BASE64: ${{ secrets.GCP_CREDENTIALS_BASE64 }}
-          GCP_PROJECT_ID: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
+          GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
         run: |
           printf "%s" "$GCP_CREDENTIALS_BASE64" | base64 --decode > "${HOME}/gcp-key.json"
           gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
@@ -66,7 +66,7 @@ jobs:
       - name: Terraform for Artifact Registry
         if: ${{ github.event.inputs.module == 'artifact-registry' }}
         env:
-          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
+          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
           TF_VAR_REGION_CONTAINER_REPO: ${{ secrets.TF_VAR_REGION_CONTAINER_REPO }}
           TF_VAR_REPOSITORY_ID: ${{ secrets.TF_VAR_REPOSITORY_ID }}
           TF_VAR_IMAGE_NAME: ${{ secrets.TF_VAR_IMAGE_NAME }}
@@ -85,7 +85,7 @@ jobs:
       - name: Terraform for Frontend Service
         if: ${{ github.event.inputs.module == 'frontend-service' }}
         env:
-          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_GCP_PROJECT_ID}}
+          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
           TF_VAR_REGION_CLOUDRUN: ${{ secrets.TF_VAR_REGION_CLOUDRUN }}
           TF_VAR_FRONTEND_SERVICE: ${{ secrets.TF_VAR_FRONTEND_SERVICE }}
           TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
@@ -103,7 +103,7 @@ jobs:
       - name: Terraform for Storage
         if: ${{ github.event.inputs.module == 'storage' }}
         env:
-          TF_VAR_GCP_PROJECT_ID: ${{secrets.TF_VAR_GCP_PROJECT_ID }}
+          TF_VAR_GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
           TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
           TF_VAR_BUCKET_NAME: ${{ secrets.TF_VAR_BUCKET_NAME }}
           TF_VAR_PERSIMMON_IMAGES_BUCKET: ${{ secrets.TF_VAR_PERSIMMON_IMAGES_BUCKET }}
@@ -191,7 +191,7 @@ jobs:
           TF_VAR_OTPLESS_CLIENT_SECRET: ${{ secrets.TF_VAR_OTPLESS_CLIENT_SECRET }}
           TF_VAR_PERSIMMON_DATA_BUCKET: ${{ secrets.TF_VAR_PERSIMMON_DATA_BUCKET }}
           TF_VAR_PERSIMMON_IMAGES_BUCKET: ${{ secrets.TF_VAR_PERSIMMON_IMAGES_BUCKET }}
-          TF_VAR_PROJECT_ID: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
+          TF_VAR_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
           TF_VAR_QUEUE_BULL_REDIS_PORT: ${{ secrets.TF_VAR_QUEUE_BULL_REDIS_PORT }}
           TF_VAR_REDIS_URL: ${{ secrets.TF_VAR_REDIS_URL }}
           TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
