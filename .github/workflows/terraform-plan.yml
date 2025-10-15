@@ -25,7 +25,6 @@ jobs:
           GCP_CREDENTIALS_BASE64: ${{ secrets.GCP_CREDENTIALS_BASE64 }}
           GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
         run: |
-          echo "Decoding GCP credentials..."
           printf "%s" "$GCP_CREDENTIALS_BASE64" | base64 --decode > "${HOME}/gcp-key.json"
           gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
           gcloud config set project "$GCP_PROJECT_ID"
@@ -34,16 +33,11 @@ jobs:
         id: changes
         run: |
           ENV_DIR=$([[ "${GITHUB_REF}" == "refs/heads/main" ]] && echo "prod" || echo "stage")
-          echo "Environment folder: $ENV_DIR"
-
-          # Fetch previous commit data
           git fetch origin ${{ github.event.before }} --depth=1
-
-          # Detect changed directories under infra/$ENV_DIR
           CHANGED_DIRS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- "infra/$ENV_DIR/*" | cut -d'/' -f3 | sort -u)
 
           if [ -z "$CHANGED_DIRS" ]; then
-            echo "No changes detected in infra/$ENV_DIR."
+            echo " No changes detected in infra/$ENV_DIR"
             echo "changed_dirs=" >> $GITHUB_OUTPUT
           else
             echo " Changed directories: $CHANGED_DIRS"
@@ -144,7 +138,6 @@ jobs:
           TF_VAR_N8N_IMAGE_NAME: ${{ secrets.TF_VAR_N8N_IMAGE_NAME }}
         run: |
           ENV_DIR=$([[ "${GITHUB_REF}" == "refs/heads/main" ]] && echo "prod" || echo "stage")
-
           for dir in ${{ steps.changes.outputs.changed_dirs }}; do
             echo "----------------------------"
             echo "Running Terraform in $dir"
