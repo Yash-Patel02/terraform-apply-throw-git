@@ -12,7 +12,7 @@ on:
           - dev
           - qa
           - uat
-          - prod
+          - production
 
       directory:
         description: 'Select Terraform Module'
