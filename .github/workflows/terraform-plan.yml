@@ -9,10 +9,9 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    # Pick environment based on branch
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
-    steps:     
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -31,7 +30,28 @@ jobs:
           gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
           gcloud config set project "$GCP_PROJECT_ID"
 
-      - name: Run Terraform in infra modules
+      - name: Determine changed Terraform directories
+        id: changes
+        run: |
+          ENV_DIR=$([[ "${GITHUB_REF}" == "refs/heads/main" ]] && echo "prod" || echo "stage")
+          echo "Environment folder: $ENV_DIR"
+
+          # Fetch previous commit data
+          git fetch origin ${{ github.event.before }} --depth=1
+
+          # Detect changed directories under infra/$ENV_DIR
+          CHANGED_DIRS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- "infra/$ENV_DIR/*" | cut -d'/' -f3 | sort -u)
+
+          if [ -z "$CHANGED_DIRS" ]; then
+            echo "No changes detected in infra/$ENV_DIR."
+            echo "changed_dirs=" >> $GITHUB_OUTPUT
+          else
+            echo " Changed directories: $CHANGED_DIRS"
+            echo "changed_dirs=$CHANGED_DIRS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Terraform plan for changed directories
+        if: steps.changes.outputs.changed_dirs != ''
         env:
           TF_VAR_AI_INTERVIEW_LINK: ${{ secrets.TF_VAR_AI_INTERVIEW_LINK }}
           TF_VAR_APP_IMAGE_NAME: ${{ secrets.TF_VAR_APP_IMAGE_NAME }}
@@ -124,16 +144,12 @@ jobs:
           TF_VAR_N8N_IMAGE_NAME: ${{ secrets.TF_VAR_N8N_IMAGE_NAME }}
         run: |
           ENV_DIR=$([[ "${GITHUB_REF}" == "refs/heads/main" ]] && echo "prod" || echo "stage")
-          echo "Environment folder: $ENV_DIR"
 
-          cd infra/$ENV_DIR
-
-          for dir in */ ; do
+          for dir in ${{ steps.changes.outputs.changed_dirs }}; do
             echo "----------------------------"
-            echo ${dir%/}
             echo "Running Terraform in $dir"
-            cd "$dir"
+            cd "infra/$ENV_DIR/$dir"
             terraform init
             terraform plan -input=false
-            cd ..
+            cd - >/dev/null
           done
