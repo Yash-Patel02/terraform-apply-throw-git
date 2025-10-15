@@ -8,7 +8,3 @@ output "frontend_image_url" {
   value       = module.frontend_artifact_registry.image_url
 }
 
-output "n8n_image_url" {
-  description = "URL of the n8n Docker image"
-  value       = module.n8n_artifact_registry.image_url
-}
