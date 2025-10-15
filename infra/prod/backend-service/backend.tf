@@ -1,8 +1,7 @@
-
-# terraform {
-#   backend "gcs" {
-#     bucket         = "akiam-state-bucket"
-#     key            = "akiam-dev-frontend/terraform.tfstate"
-#     encrypt        = true
-#   }
-# }
+terraform {
+  backend "gcs" {
+    bucket = "akiam-statefiles-storage-bucket"
+    prefix = "aikam-tf-qa/backend-service"
+    credentials = "home/runner/gcp-key.json"
+  }
+}
