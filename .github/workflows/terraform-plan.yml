@@ -49,17 +49,12 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.0
-
       - name: Setup GCP credentials
         env:
           GCP_CREDENTIALS_BASE64: ${{ secrets.GCP_CREDENTIALS_BASE64 }}
           GCP_PROJECT_ID: ${{ secrets.TF_VAR_PROJECT_ID }}
         run: |
-          echo "${GCP_CREDENTIALS_BASE64}" | tr -d '\r' | base64 --decode > "${HOME}/gcp-key.json"
-          if [ ! -s "${HOME}/gcp-key.json" ]; then
-             echo "Error: GCP key file is empty or invalid"
-            exit 1
-          fi
+          printf "%s" "$GCP_CREDENTIALS_BASE64" | base64 --decode > "${HOME}/gcp-key.json"
           gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
           gcloud config set project "$GCP_PROJECT_ID"
 
