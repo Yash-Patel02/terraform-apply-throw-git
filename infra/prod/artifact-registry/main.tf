@@ -9,7 +9,6 @@ module "backend_artifact_registry" {
 
 module "frontend_artifact_registry" {
   source = "../../../modules/artifact-registry"
-
   project_id    = var.PROJECT_ID
   region        = var.REGION_CONTAINER_REPO
   repository_id = "${var.REPOSITORY_ID}-frontend"
